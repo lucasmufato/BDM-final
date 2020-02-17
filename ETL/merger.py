@@ -116,10 +116,5 @@ if folderExist(folder) is False:
 
 mainDataframe = createSingleCSV()
 iterateFolder(folder, mainDataframe)
-
-
-
-
-
 processData(mainDataframe)
-writeCsvFile("{0}_procesed.csv".format(folder), mainDataframe)
+writeCsvFile("{0}_procesed.csv".format(folder), mainDataframe, True)

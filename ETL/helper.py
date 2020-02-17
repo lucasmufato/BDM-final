@@ -18,8 +18,8 @@ def writeFile(name: str, content):
         file.write(content)
 
 
-def writeCsvFile(name: str, dataframe: DataFrame):
-    dataframe.to_csv(name, encoding='utf-8', index=False)
+def writeCsvFile(name: str, dataframe: DataFrame, indexB = False):
+    dataframe.to_csv(name, encoding='utf-8', index=indexB)
 
 
 def folderExist(folderpath: str) -> bool:
@@ -37,3 +37,14 @@ def createFolderIfItDoenstExist(folderpath: str):
 
 def createDataframeFromCsv(bytes) -> DataFrame:
     return pd.read_csv(io.StringIO(bytes.decode('utf-8')), skiprows=1)
+
+def getSongMetadata(songId : str, authToken: str):
+    """https://developer.spotify.com/console/get-audio-features-track/?id="""
+    url = "https://api.spotify.com/v1/audio-features/{0}".format(songId)
+    headers = {"Authorization": "Bearer {0}".format(authToken),
+               "Accept": "application/json",
+               "Content-Type": "application/json"}
+    response = get(url, headers= headers)
+    if not response.status_code == 200:
+        raise Exception("Cannot download song id: {0} with token: {1}. Error is: {2}".format(songId, authToken, response.content))
+    return response
