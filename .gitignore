@@ -3,3 +3,6 @@
 /ETL/global_weekly_procesed.csv
 */.idea
 *.pyc
+ETL/originalDataset.csv
+
+ETL/dataset_completer_out/
