@@ -4,7 +4,7 @@ from sys import argv
 import pandas as pd
 from pandas import DataFrame
 
-from helper import folderExist, writeCsvFile
+from helper import folderExist, writeCsvFile, createFolderIfItDoenstExist
 
 
 def firstTop10(pos: int):
@@ -49,7 +49,12 @@ def weekInTop50(pos: int, date: str, coma = False):
     return ""
 
 
-def processData(mainDataframe):
+def processData(mainDataframe: DataFrame):
+    for row in mainDataframe.itertuples():
+        cant = row.timesTop10 + row.timesTop25 + row.timesTop50
+        avg = row.accumulated_streams / cant
+        print("{3}--{0}/{1}={2}".format(row.accumulated_streams, cant, avg, row.Index))
+        smt = mainDataframe.loc[row.Index, "avgStreams"] = round(avg, 2)
     pass
 
 
@@ -78,9 +83,9 @@ def updatedRowData(main_row, cu_row):
             "timesTop10": firstTop10(cu_row.Position) + main_row.timesTop10,
             "timesTop25": firstTop25(cu_row.Position) + main_row.timesTop25,
             "timesTop50": firstTop50(cu_row.Position) + main_row.timesTop50,
-            "weeksTop10": main_row.weeksTop10 + weekInTop10(cu_row.Position, cu_row.startingDate, True),
-            "weeksTop25": main_row.weeksTop25 + weekInTop25(cu_row.Position, cu_row.startingDate, True),
-            "weeksTop50": main_row.weeksTop50 + weekInTop50(cu_row.Position, cu_row.startingDate, True),
+            "weeksTop10":  weekInTop10(cu_row.Position, cu_row.startingDate) if main_row.weeksTop10 == "" else main_row.weeksTop10 + weekInTop10(cu_row.Position, cu_row.startingDate, True),
+            "weeksTop25":  weekInTop25(cu_row.Position, cu_row.startingDate) if main_row.weeksTop25 == "" else main_row.weeksTop25 + weekInTop25(cu_row.Position, cu_row.startingDate, True),
+            "weeksTop50":  weekInTop50(cu_row.Position, cu_row.startingDate) if main_row.weeksTop50 == "" else main_row.weeksTop50 + weekInTop50(cu_row.Position, cu_row.startingDate, True),
             "accumulated_streams": cu_row.Streams + main_row.accumulated_streams
             }
 
@@ -117,4 +122,5 @@ if folderExist(folder) is False:
 mainDataframe = createSingleCSV()
 iterateFolder(folder, mainDataframe)
 processData(mainDataframe)
-writeCsvFile("{0}_procesed.csv".format(folder), mainDataframe, True)
+createFolderIfItDoenstExist("out_merger")
+writeCsvFile("out_merger/{0}_procesed.csv".format(folder), mainDataframe, True)

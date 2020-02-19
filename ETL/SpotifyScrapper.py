@@ -29,7 +29,7 @@ def getDateBefore(currentDate: date, mode: str) -> date:
     if mode == "weekly":
         return currentDate - timedelta(days=7)
     elif mode == "daily":
-        return currentDate - timedelta(days=7)
+        return currentDate - timedelta(days=1)
     else:
         raise Exception("Le erraste con el parametro mode, es 'weekly' o 'daily")
 
