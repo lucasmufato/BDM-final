@@ -30,7 +30,14 @@ def firstTop100(pos: int):
         return 1
     return 0
 
-def weekInTop10(pos: int, date: str, coma = False):
+
+def firstTop200(pos: int):
+    if 100 < pos <= 200:
+        return 1
+    return 0
+
+
+def weekInTop10(pos: int, date: str, coma=False):
     if firstTop10(pos) == 1:
         if coma:
             return "," + date
@@ -38,7 +45,7 @@ def weekInTop10(pos: int, date: str, coma = False):
     return ""
 
 
-def weekInTop25(pos: int, date: str, coma = False):
+def weekInTop25(pos: int, date: str, coma=False):
     if firstTop25(pos) == 1:
         if coma:
             return "," + date
@@ -46,23 +53,33 @@ def weekInTop25(pos: int, date: str, coma = False):
     return ""
 
 
-def weekInTop50(pos: int, date: str, coma = False):
+def weekInTop50(pos: int, date: str, coma=False):
     if firstTop50(pos) == 1:
         if coma:
-            return ","+date
+            return "," + date
         return date
     return ""
 
-def weekInTop100(pos: int, date: str, coma = False):
+
+def weekInTop100(pos: int, date: str, coma=False):
     if firstTop100(pos) == 1:
         if coma:
-            return ","+date
+            return "," + date
         return date
     return ""
+
+
+def weekInTop200(pos: int, date: str, coma=False):
+    if firstTop200(pos) == 1:
+        if coma:
+            return "," + date
+        return date
+    return ""
+
 
 def processData(mainDataframe: DataFrame):
     for row in mainDataframe.itertuples():
-        cant = row.timesTop10 + row.timesTop25 + row.timesTop50
+        cant = row.timesTop10 + row.timesTop25 + row.timesTop50 + row.timesTop100 + row.timesTop200
         avg = row.accumulated_streams / cant
         smt = mainDataframe.loc[row.Index, "avgStreams"] = round(avg, 2)
     pass
@@ -78,10 +95,12 @@ def createFirstRow(cu_row):
             "timesTop25": firstTop25(cu_row.Position),
             "timesTop50": firstTop50(cu_row.Position),
             "timesTop100": firstTop100(cu_row.Position),
+            "timesTop200": firstTop200(cu_row.Position),
             "weeksTop10": weekInTop10(cu_row.Position, cu_row.startingDate),
             "weeksTop25": weekInTop25(cu_row.Position, cu_row.startingDate),
             "weeksTop50": weekInTop50(cu_row.Position, cu_row.startingDate),
             "weeksTop100": weekInTop100(cu_row.Position, cu_row.startingDate),
+            "weeksTop200": weekInTop200(cu_row.Position, cu_row.startingDate),
             "accumulated_streams": cu_row.Streams
             }
 
@@ -96,10 +115,22 @@ def updatedRowData(main_row, cu_row):
             "timesTop25": firstTop25(cu_row.Position) + main_row.timesTop25,
             "timesTop50": firstTop50(cu_row.Position) + main_row.timesTop50,
             "timesTop100": firstTop100(cu_row.Position) + main_row.timesTop100,
-            "weeksTop10":  weekInTop10(cu_row.Position, cu_row.startingDate) if main_row.weeksTop10 == "" else main_row.weeksTop10 + weekInTop10(cu_row.Position, cu_row.startingDate, True),
-            "weeksTop25":  weekInTop25(cu_row.Position, cu_row.startingDate) if main_row.weeksTop25 == "" else main_row.weeksTop25 + weekInTop25(cu_row.Position, cu_row.startingDate, True),
-            "weeksTop50":  weekInTop50(cu_row.Position, cu_row.startingDate) if main_row.weeksTop50 == "" else main_row.weeksTop50 + weekInTop50(cu_row.Position, cu_row.startingDate, True),
-            "weeksTop100":  weekInTop100(cu_row.Position, cu_row.startingDate) if main_row.weeksTop100 == "" else main_row.weeksTop100 + weekInTop100(cu_row.Position, cu_row.startingDate, True),
+            "timesTop200": firstTop200(cu_row.Position) + main_row.timesTop200,
+            "weeksTop10": weekInTop10(cu_row.Position,
+                                      cu_row.startingDate) if main_row.weeksTop10 == "" else main_row.weeksTop10 + weekInTop10(
+                cu_row.Position, cu_row.startingDate, True),
+            "weeksTop25": weekInTop25(cu_row.Position,
+                                      cu_row.startingDate) if main_row.weeksTop25 == "" else main_row.weeksTop25 + weekInTop25(
+                cu_row.Position, cu_row.startingDate, True),
+            "weeksTop50": weekInTop50(cu_row.Position,
+                                      cu_row.startingDate) if main_row.weeksTop50 == "" else main_row.weeksTop50 + weekInTop50(
+                cu_row.Position, cu_row.startingDate, True),
+            "weeksTop100": weekInTop100(cu_row.Position,
+                                        cu_row.startingDate) if main_row.weeksTop100 == "" else main_row.weeksTop100 + weekInTop100(
+                cu_row.Position, cu_row.startingDate, True),
+            "weeksTop200": weekInTop200(cu_row.Position,
+                                        cu_row.startingDate) if main_row.weeksTop200 == "" else main_row.weeksTop200 + weekInTop200(
+                cu_row.Position, cu_row.startingDate, True),
             "accumulated_streams": cu_row.Streams + main_row.accumulated_streams
             }
 
@@ -123,8 +154,10 @@ def iterateFolder(folder: str, mainDataframe: DataFrame):
 
 def createSingleCSV() -> DataFrame:
     return pd.DataFrame(
-        columns=["TrackName", "Artist", "maxStreams", "avgStreams", "top1", "timesTop10",
-                 "timesTop25", "timesTop50","timesTop100", "weeksTop10", "weeksTop25", "weeksTop50","weeksTop100", "accumulated_streams"])
+        columns=["TrackName", "Artist", "maxStreams", "avgStreams", "accumulated_streams",
+                 "top1", "timesTop10", "timesTop25", "timesTop50", "timesTop100", "timesTop200",
+                 "weeksTop10", "weeksTop25", "weeksTop50", "weeksTop100", "weeksTop200"])
+
 
 def doMerge(folder: str):
     mainDataframe = createSingleCSV()
@@ -135,6 +168,7 @@ def doMerge(folder: str):
     print("saving merged datasets")
     createFolderIfItDoenstExist("out_merger")
     writeCsvFile("out_merger/{0}_procesed.csv".format(folder), mainDataframe, True)
+
 
 if __name__ == '__main__':
     print("First param should be folder from where to read all CSV and merge them")

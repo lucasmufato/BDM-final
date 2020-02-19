@@ -63,7 +63,7 @@ def download(country: str, mode: str, startingDate: date):
         print("got the file")
         dataFrame = createDataframeFromCsv(file)
         del file, url
-        dataFrame = cutUntilLine(dataFrame, 50)
+        #dataFrame = cutUntilLine(dataFrame, 200)
         dataFrame = transforUrlToId(dataFrame)
         dataFrame = addDateColumn(dataFrame, "{0:%Y-%m-%d}".format(weekBefore))
 
