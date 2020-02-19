@@ -2,7 +2,7 @@ from sys import argv
 
 import pandas as pd
 
-from helper import writeCsvFile
+from helper import writeCsvFile, createFolderIfItDoenstExist
 
 
 def getDuplicates(dataset):
@@ -21,5 +21,6 @@ print("Dataset has {0} songs".format(dataset.size))
 duplicates = getDuplicates(dataset)
 cleanDataset = deleteDuplicates(dataset)
 print("New Dataset has {0} songs".format(cleanDataset.size))
-writeCsvFile("cleanOriginal.csv", cleanDataset)
+createFolderIfItDoenstExist("out_cleaner")
+writeCsvFile("out_cleaner/cleanOriginal.csv", cleanDataset)
 print("Done :)")

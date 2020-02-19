@@ -69,15 +69,14 @@ def download(country: str, mode: str, startingDate: date):
 
         file_name = "{0}_{1}/{2:%Y-%m-%d}--{3:%Y-%m-%d}.csv".format(country, mode, weekBefore, currentDate)
         writeCsvFile(file_name, dataFrame)
-        print("wrote down the file")
         currentDate = weekBefore
 
-
-print("Example of params is: global weekly 2018-07-13")
-print("where global is the country from where to get the list")
-print("where weekly is the period of the list. it can be 'weekly' or 'daily'")
-print("where 2018-07-13 is the starting date to scrap from, the scrip will start downloading from that "
-      "date backwards untill it doenst find more csvs \r\n \r\n")
-country, mode, date = argv[1], argv[2], argv[3]
-date = datetime.strptime(date, "%Y-%m-%d").date()
-download(country, mode, date)
+if __name__ == '__main__':
+    print("Example of params is: global weekly 2018-07-13")
+    print("where global is the country from where to get the list")
+    print("where weekly is the period of the list. it can be 'weekly' or 'daily'")
+    print("where 2018-07-13 is the starting date to scrap from, the scrip will start downloading from that "
+          "date backwards untill it doenst find more csvs \r\n \r\n")
+    country, mode, date = argv[1], argv[2], argv[3]
+    date = datetime.strptime(date, "%Y-%m-%d").date()
+    download(country, mode, date)
